@@ -70,7 +70,7 @@ $i=$i-1;
 if ($mark==0 or $mark >= 5) $text_mark = "$mark баллов из $i"; 
 if ($mark==1) $text_mark = "$mark балл из $i";
 if ($mark >= 2 and $mark <= 4) $text_mark = "$mark балла из $i";
-$font = 'Helvetica.ttf';
+$font = 'fonts/Helvetica.ttf';
 $black = imagecolorallocate($image, 0, 0, 0);
 $textcolor = imagecolorallocate($image, 80, 80, 80);
 
