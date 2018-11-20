@@ -1,14 +1,14 @@
 <?php 
 session_start();
-if(!isset($_SESSION['login'])) 
-header('HTTP/1.0 403 Forbiden'); 
-else{
+include 'core/functions.php';
+checksession();
 
 if (!$_GET) exit; 
 else{
 if (!@$test=file_get_contents('tests/'.$_GET["test"])) header('HTTP/1.1 404 Not Found'); else {
 
 echo "<p><b>Список тестов:</b></p>";
+
 $dir = 'tests';
 $tests_list = scandir($dir);
 foreach ($tests_list as $test_list){
@@ -35,8 +35,6 @@ $i=1;
 
 <?php foreach ($test as $points){
 $rigthanswers[$i]=$points['answer'];
-
-
 ?>
 
 <form action="" method="POST">
@@ -51,21 +49,20 @@ $rigthanswers[$i]=$points['answer'];
 <p><input type="submit" value="Отправить"></p>
 </form>
 
-
 <?php
 $i=1;
 $mark=0;
 if (!empty($_POST)){
-   echo $_SESSION['login'];
+   echo $_SESSION['name'];
    foreach ($rigthanswers as $right){
    if ($_POST[$i]==$right) {$mark++; echo "<p>Ответ на вопрос $i ($_POST[$i]) верный</p>";} else echo "<p>Ответ на вопрос $i ($_POST[$i]) неверный</p>";
     $i++;
 } 
 
 $image = imagecreatetruecolor(300,212);
-$image_path = 'cert.jpg';
+$image_path = 'img/cert.jpg';
 $img = imagecreatefromjpeg($image_path);
-$text_name = $_SESSION['login'];
+$text_name = $_SESSION['name'];
 $i=$i-1;
 if ($mark==0 or $mark >= 5) $text_mark = "$mark баллов из $i"; 
 if ($mark==1) $text_mark = "$mark балл из $i";
@@ -82,15 +79,16 @@ $x_mark = 150 - round(($bbox_mark[2] - $bbox_mark[0]) / 2);
 
 imagettftext($image, 20, 0, $x_name, 110, $black, $font, $text_name);
 imagettftext($image, 16, 0, $x_mark, 150, $black, $font, $text_mark);
-imagepng($image, 'sertificat.png');
+imagepng($image, 'img/sertificat.png');
 imagedestroy($image);
 ?>
-<img src="sertificat.png">
+<img src="img/sertificat.png">
 <?php
 }
 }
 }
-}
 ?>
+
+<p><a href="core/logout.php"><h3>ВЫХОД</h3></a></p>
 </body>
 </html>

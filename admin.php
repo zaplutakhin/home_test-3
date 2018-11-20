@@ -1,16 +1,10 @@
 <?php
 session_start();
-if(!isset($_SESSION['login'])) 
-header('HTTP/1.0 403 Forbiden'); 
-else{
-
-  if (!empty($_FILES) && array_key_exists('test', $_FILES)) {
-  $filename=date("G-i-s");
-  if (move_uploaded_file($_FILES['test']['tmp_name'], "./tests/$filename.json")) header('Location: list.php');
- }
- echo "<p><h3>Список тестов:</h3></p>";
- $dir = 'tests';
- $tests = scandir($dir);
+include 'core/functions.php';
+checksessionadmin();
+$dir = 'tests';
+$tests = scandir($dir);
+upload();
 ?>
  <html lang="ru">
  <head>
@@ -18,36 +12,12 @@ else{
    <meta charset="utf-8">
  </head>
 <body>
+<p><h3>Список тестов:</p></h3>
 <table border="0">
 <?php
-
- foreach ($tests as $test){
-  if ($test !=='..' and $test!=='.'){
-    $testname=json_decode(file_get_contents('tests/'.urlencode($test)), true);
-    $name=$testname['0']['testname'];
-    ?>
-    <tr>
-    <td valign="top">
-    <?php
-    echo "<a href='test.php?test=$test'> $name </a>";
-       if ($_SESSION['login'] == 'admin') {
-       $deltest[$i]='tests/'.$test;
-       ?>
-     </td>
-     <td valign="top">
-      <form action="del.php" method="post">
-      <input type="hidden" name="path" value="<?php echo $deltest[$i];?>" >
-      <input type="submit" name="delete" value="Удалить">
-      </form>
-      </td>
-      </tr>
-       <?php
-     }    
- $i++;
-}
-}
+$i=1;
+include 'core/testlist.php';
 ?>
-
 </table>
 <p><h3>Загрузить тест:</h3></p>
 <form action=admin.php method=post enctype=multipart/form-data>
@@ -56,8 +26,6 @@ else{
 </div>
 <input type="submit" name="test">
 </form>
+<p><a href="core/logout.php"><h3>ВЫХОД</h3></a></p>
 </body>
 </html>
-<?php
-}
-?>
